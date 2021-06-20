@@ -10,13 +10,15 @@ class CoreCommands(commands.Cog):
 
     @commands.command()
     async def findsheet(self, ctx, char_id):
+        channel = discord.utils.get(ctx.guild.channels, name='oath-sheets')
+
         _id = f'ID: {char_id}'
         _number_msg = 0
         _charsheet = ''
         _found = False
         _msg_id = []
 
-        async for msg in ctx.channel.history(limit=1000):
+        async for msg in channel.history(limit=1000):
             _number_msg += 1
 
             if _id in msg.content:
