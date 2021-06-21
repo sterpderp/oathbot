@@ -1,3 +1,6 @@
+from func import core
+
+
 class CharSheet:
     def __init__(self):
         self.char_name = ''
@@ -8,24 +11,43 @@ class CharSheet:
         self.r_pips = 0
 
         self.skills = {
-            "hunt": 0,
-            "study": 0,
-            "survey": 0,
-            "tinker": 0,
+            "Hunt": 0,
+            "Study": 0,
+            "Survey": 0,
+            "Tinker": 0,
 
-            "finesse": 0,
-            "prowl": 0,
-            "skirmish": 0,
-            "wreck": 0,
+            "Finesse": 0,
+            "Prowl": 0,
+            "Skirmish": 0,
+            "Wreck": 0,
 
-            "aether": 0,
-            "command": 0,
-            "consort": 0,
-            "sway": 0
+            "Aether": 0,
+            "Command": 0,
+            "Consort": 0,
+            "Sway": 0
         }
 
         self.stress = 0
 
-        self.trauma = []
-        self.harm = []
-        self.rerolls = []
+        self.trauma = ['[ — ]']
+        self.harm = ['[ — ]']
+        self.rerolls = ['[ — ]']
+
+    def parse(self, data):
+        self.char_name = data[0]
+        self.char_id = data[1]
+
+        _ipr = core.ipr_split(data[2])
+        self.i_pips = _ipr[0]
+        self.p_pips = _ipr[1]
+        self.r_pips = _ipr[2]
+
+        for i in data:
+            for j in self.skills:
+                if j in i:
+                    self.skills[j] = i.count('•')
+                else:
+                    pass
+        for i in data:
+            if 'Stress' in i:
+                self.stress = i.count('•')
