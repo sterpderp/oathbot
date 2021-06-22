@@ -58,3 +58,24 @@ class CoreCommands(commands.Cog):
                 _charsheet.parse(_data)
 
                 print(_charsheet.skills)
+
+    @commands.command()
+    async def echo(self, ctx, char_id):
+        channel = discord.utils.get(ctx.guild.channels, name='oath-sheets')
+        _id = f'ID: {char_id}'
+        _found = False
+
+        async for msg in channel.history(limit=1000):
+
+            if _id in msg.content:
+                _data = msg.content.split('\n')
+                _charsheet = CharSheet()
+                _charsheet.parse(_data)
+
+                print(f'Raw data: {_data}')
+
+
+                await ctx.send(f'Echoing character sheet with ID: {_id}\n' + _charsheet.print())
+
+                
+

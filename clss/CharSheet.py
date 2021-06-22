@@ -29,9 +29,9 @@ class CharSheet:
 
         self.stress = 0
 
-        self.trauma = ['[ — ]']
-        self.harm = ['[ — ]']
-        self.rerolls = ['[ — ]']
+        self.trauma = []
+        self.harm = {}
+        self.rerolls = {}
 
     def parse(self, data):
         self.char_name = data[0]
@@ -51,3 +51,54 @@ class CharSheet:
         for i in data:
             if 'Stress' in i:
                 self.stress = i.count('•')
+
+    def print(self) -> str:
+        #name and character id
+        output = ''
+        output += f'__{self.char_name}__\n'
+        output += f'ID: {self.char_id}\n'
+
+        dash = '\u2014'
+        dot = '\u2022'
+        space = ' '
+
+        #resistance pips
+        output += f'I {dash+space if self.i_pips == 0 else (dot+space)*self.i_pips}'
+        output += f'P {dash+space if self.p_pips == 0 else (dot+space)*self.p_pips}'
+        output += f'R {dash+space if self.r_pips == 0 else (dot+space)*self.r_pips}\n'
+
+        #skills
+        for k, v in self.skills.items():
+            if v > 0:
+                output += f'{k} {(dot+space)*v}\n'
+
+        #stress
+        output += f'Stress {(dot+space)*self.stress}\n'
+
+        #trauma
+        output += 'Trauma '
+        if len(self.trauma) == 0:
+            output += f'[ {dash} ]'
+        else:
+            for i in self.trauma:
+                output += f'[ {i} ]'
+        output += '\n'
+
+        #harm
+        output += 'Harm '
+        if len(self.harm) == 0:
+            output += f'[ {dash} ]'
+        else:
+            for k, v in self.harm.items():
+                output += f'[ {k} {(dot+space)*v}] '
+        output += '\n'
+
+        #rerolls
+        output +='Rerolls '
+        if len(self.rerolls) == 0:
+            output += f'[ {dash} ]'
+        else:
+            for k, v in self.rerolls.items():
+                output += f'[ {k} {(dot+space)*v}] '
+        output += '\n'
+        return output
