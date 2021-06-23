@@ -35,7 +35,7 @@ class CharSheet:
 
     def parse(self, data):
         self.char_name = data[0]
-        self.char_id = data[1]
+        self.char_id = data[1].replace('ID: ', '')
 
         _ipr = core.ipr_split(data[2])
         self.i_pips = _ipr[0]
@@ -51,6 +51,28 @@ class CharSheet:
         for i in data:
             if 'Stress' in i:
                 self.stress = i.count('•')
+
+        for i in data:
+            if 'Trauma [' in i:
+                self.trauma = core.bracket_split(i)
+
+        for i in data:
+            if 'Harm [' in i:
+                e = core.bracket_split(i)
+                self.harm = core.harm_count(e)
+
+        for i in data:
+            if 'Rerolls [' in i:
+                e = core.bracket_split(i)
+                self.rerolls = core.harm_count(e)
+
+        print(self.harm)
+        print(self.rerolls)
+
+
+
+
+
 
     def print(self) -> str:
         #name and character id

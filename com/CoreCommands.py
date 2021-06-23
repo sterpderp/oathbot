@@ -75,7 +75,7 @@ class CoreCommands(commands.Cog):
                 print(f'Raw data: {_data}')
 
 
-                await ctx.send(f'Echoing character sheet with ID: {_id}\n' + _charsheet.print())
+                await channel.send(f'Echoing character sheet with ID: {_id}\n' + _charsheet.print())
 
                 
 
