@@ -74,8 +74,16 @@ class CoreCommands(commands.Cog):
 
                 print(f'Raw data: {_data}')
 
-
                 await channel.send(f'Echoing character sheet with ID: {_id}\n' + _charsheet.print())
 
-                
+    # print the text of a given rule as a message
+    @commands.command()
+    async def rules(self, ctx, rule):
+        _rule = rule.lower()
+        _rules_list = core.rules_loader()
+        _rules_error = f"**{rule}** is not a defined rule! {_rules_list['list']}"
 
+        if rule in _rules_list:
+            await ctx.send(_rules_list[_rule])
+        else:
+            await ctx.send(_rules_error)

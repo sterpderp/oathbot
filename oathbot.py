@@ -9,11 +9,10 @@ load_dotenv("data/.env")
 
 TOKEN = os.getenv('DISCORD_TOKEN')
 
-oathbot = commands.Bot(command_prefix='!b ')
+oathbot = commands.Bot(command_prefix='!o ')
 
 # add command cogs to runtime
 oathbot.add_cog(CoreCommands(oathbot))
-
 
 @oathbot.event
 async def on_ready():
