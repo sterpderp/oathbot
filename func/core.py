@@ -1,3 +1,6 @@
+import json
+
+
 # get specific character sheet
 def get_sheet(ctx, char_id):
 
@@ -45,3 +48,10 @@ def harm_count(raw_data):
         clean_data[i] = _pips
 
     return clean_data
+
+
+# load rules json for rule post command
+def rules_loader(): 
+    with open('./data/rules.json', encoding='utf-8') as json_file:
+        rules = json.loads(json_file.read())
+        return rules
