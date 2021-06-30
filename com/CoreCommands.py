@@ -57,7 +57,8 @@ class CoreCommands(commands.Cog):
                 _charsheet = CharSheet()
                 _charsheet.parse(_data)
 
-                print(_charsheet.skills)
+                await channel.send(_charsheet.print())
+                await msg.delete()
 
     @commands.command()
     async def echo(self, ctx, char_id):
@@ -74,7 +75,120 @@ class CoreCommands(commands.Cog):
 
                 print(f'Raw data: {_data}')
 
-                await channel.send(f'Echoing character sheet with ID: {_id}\n' + _charsheet.print())
+                await channel.send(f'Echoing character sheet with {_id}\n' + _charsheet.print())
+    
+    #generic resistance command that expects the name of the resistance being edited as an argument
+    @commands.command(name="resistance", aliases=['resist', 'resistances', 'res', 'Resistance', 'Resist', 'Resistances', 'Res'])
+    async def resistance(self, ctx, char_id:str, resistance_name:str, amount:int):
+        channel = discord.utils.get(ctx.guild.channels, name='oath-sheets')
+        msg = await core.find_message(channel, char_id)
+        if msg and (msg.author.id == self.bot.user.id):
+            charsheet = core.create_charsheet(msg)
+            resistance_name = resistance.name.title()
+            if amount >= 0 and resistance_name in core.resistances:
+                if resistance_name == 'Insight':
+                    charsheet.i_pips = amount
+                elif resistance_name == 'Prowess':
+                    charsheet.p_pips = amount
+                elif resistance_name == 'Resolve':
+                    charsheet.r_pips = amount
+                
+            await msg.edit(content=charsheet.print())
+
+    #passthrough utility commands for modifying insight, prowess, or resolve
+    @commands.command(name='insight', aliases=['Insight', 'I', 'i'])
+    async def insight(self, ctx, char_id:str, amount:int):
+        await resistance(ctx, char_id, 'Insight', amount)
+
+    @commands.command(name='prowess', aliases=['Prowess', 'P', 'p'])
+    async def prowess(self, ctx, char_id:str, amount:int):
+        await resistance(ctx, char_id, 'Prowess', amount)
+
+    @commands.command(name='resolve', aliases=['Resolve', 'R', 'r'])
+    async def resolve(self, ctx, char_id:str, amount:int):
+        await resistance(ctx, char_id, 'Resolve', amount)
+
+    @commands.command(name="skill", aliases=core.skills + [s.lower() for s in core.skills])
+    async def skill(self, ctx, char_id:str, amount:int):
+        channel = discord.utils.get(ctx.guild.channels, name='oath-sheets')
+        msg = await core.find_message(channel, char_id)
+        if msg and (msg.author.id == self.bot.user.id):
+            charsheet = core.create_charsheet(msg)
+            
+            #setup data to find the alias they used to call this command (saves us from having 12 identical passthrough functions)
+            stringlist = ctx.message.content.split(' ')
+            print(stringlist)
+
+            #check whether the first word passed (alias of command) exists in list of all skill names
+            if amount >= 0 and len(stringlist) > 1 and stringlist[1].title() in core.skills:
+                skillname = stringlist[1].title()
+
+                lastamount = charsheet.skills[skillname]
+                charsheet.skills[skillname] = amount
+
+                #using lastAmount compared to the newAmount, we can also determine whether resistance pips should be updated
+                resistancemod = 0
+                if amount > 0 and lastamount == 0: resistancemod = 1
+                elif amount == 0 and lastamount > 0: resistancemod = -1
+
+                if resistancemod != 0:
+                    if skillname in core.insight:
+                        charsheet.i_pips += resistancemod
+                    if skillname in core.prowess:
+                        charsheet.p_pips += resistancemod
+                    if skillname in core.resolve:
+                        charsheet.r_pips += resistancemod
+                
+                await msg.edit(content=charsheet.print())
+
+    @commands.command(name="stress", aliases=['Stress'])
+    async def stress(self, ctx, char_id:str, amount:int):
+        channel = discord.utils.get(ctx.guild.channels, name='oath-sheets')
+        msg = await core.find_message(channel, char_id)
+        if msg and (msg.author.id == self.bot.user.id):
+            charsheet = core.create_charsheet(msg)
+            if amount >= 0:
+                charsheet.stress = amount
+            await msg.edit(content=charsheet.print())
+
+    @commands.command(name="trauma", aliases=['Trauma'])
+    async def trauma(self, ctx, char_id:str, *traumaName:str):
+        channel = discord.utils.get(ctx.guild.channels, name='oath-sheets')
+        msg = await core.find_message(channel, char_id)
+        if msg and (msg.author.id == self.bot.user.id):
+            charsheet = core.create_charsheet(msg)
+            traumaNameList = list(traumaName)
+            name = ''
+            for s in traumaNameList:
+                name += f'{s} '
+            name = name.strip()
+            name = name.title()
+
+            if name in charsheet.trauma:
+                charsheet.trauma.remove(name)
+            else:
+                charsheet.trauma.append(name)
+            await msg.edit(content=charsheet.print())
+
+    @commands.command(name="harm", aliases=['Harm'])
+    async def harm(self, ctx, char_id:str, *nameAndLevel):
+        channel = discord.utils.get(ctx.guild.channels, name='oath-sheets')
+        msg = await core.find_message(channel, char_id)
+        if msg and (msg.author.id == self.bot.user.id):
+            charsheet = core.create_charsheet(msg)
+
+            if core.edit_harm_rerolls(charsheet.harm, nameAndLevel):
+                await msg.edit(content=charsheet.print())
+
+    @commands.command(name="rerolls", aliases=['reroll, Rerolls, rerolls'])
+    async def rerolls(self, ctx, char_id:str, *nameAndLevel):
+        channel = discord.utils.get(ctx.guild.channels, name='oath-sheets')
+        msg = await core.find_message(channel, char_id)
+        if msg and (msg.author.id == self.bot.user.id):
+            charsheet = core.create_charsheet(msg)
+
+            if core.edit_harm_rerolls(charsheet.rerolls, nameAndLevel):
+                await msg.edit(content=charsheet.print())
 
     # print the text of a given rule as a message
     @commands.command()

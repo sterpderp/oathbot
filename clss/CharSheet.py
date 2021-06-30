@@ -111,7 +111,8 @@ class CharSheet:
         if len(self.harm) == 0:
             output += f'[ {dash} ]'
         else:
-            for k, v in self.harm.items():
+            sorted_items = sorted(self.harm.items(), key=lambda x: x[1])
+            for k, v in sorted_items:
                 output += f'[ {k} {(dot+space)*v}] '
         output += '\n'
 
@@ -120,7 +121,8 @@ class CharSheet:
         if len(self.rerolls) == 0:
             output += f'[ {dash} ]'
         else:
-            for k, v in self.rerolls.items():
+            sorted_items = sorted(self.rerolls.items(), key=lambda x: x[1])
+            for k, v in sorted_items:
                 output += f'[ {k} {(dot+space)*v}] '
         output += '\n'
         return output
