@@ -66,9 +66,6 @@ class CharSheet:
                 e = core.bracket_split(i)
                 self.rerolls = core.harm_count(e)
 
-        print(self.harm)
-        print(self.rerolls)
-
 
 
 

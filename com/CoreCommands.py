@@ -4,11 +4,18 @@ from discord.ext import commands
 from func import core
 from clss.CharSheet import CharSheet
 
+from discord_components import *
 
 class CoreCommands(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.stressButtons = [[Button(style=ButtonStyle.green, label='-1 Stress', id='-1stress'), Button(style=ButtonStyle.red, label='+1 Stress', id='+1stress')]]
+
+    @commands.command()
+    async def button(self, ctx):
+        await ctx.send("Test message", 
+        components=[Button(style=ButtonStyle.red, label="Test")])
 
     @commands.command()
     async def findsheet(self, ctx, char_id):
@@ -57,7 +64,7 @@ class CoreCommands(commands.Cog):
                 _charsheet = CharSheet()
                 _charsheet.parse(_data)
 
-                await channel.send(_charsheet.print())
+                await channel.send(_charsheet.print(), components=self.stressButtons)
                 await msg.delete()
 
     @commands.command()
@@ -93,7 +100,7 @@ class CoreCommands(commands.Cog):
                 elif resistance_name == 'Resolve':
                     charsheet.r_pips = amount
                 
-            await msg.edit(content=charsheet.print())
+            await msg.edit(content=charsheet.print(), components=self.stressButtons)
 
     #passthrough utility commands for modifying insight, prowess, or resolve
     @commands.command(name='insight', aliases=['Insight', 'I', 'i'])
@@ -139,7 +146,7 @@ class CoreCommands(commands.Cog):
                     if skillname in core.resolve:
                         charsheet.r_pips += resistancemod
                 
-                await msg.edit(content=charsheet.print())
+                await msg.edit(content=charsheet.print(), components=self.stressButtons)
 
     @commands.command(name="stress", aliases=['Stress'])
     async def stress(self, ctx, char_id:str, amount:int):
@@ -149,7 +156,7 @@ class CoreCommands(commands.Cog):
             charsheet = core.create_charsheet(msg)
             if amount >= 0:
                 charsheet.stress = amount
-            await msg.edit(content=charsheet.print())
+            await msg.edit(content=charsheet.print(), components=self.stressButtons)
 
     @commands.command(name="trauma", aliases=['Trauma'])
     async def trauma(self, ctx, char_id:str, *traumaName:str):
@@ -168,7 +175,7 @@ class CoreCommands(commands.Cog):
                 charsheet.trauma.remove(name)
             else:
                 charsheet.trauma.append(name)
-            await msg.edit(content=charsheet.print())
+            await msg.edit(content=charsheet.print(), components=self.stressButtons)
 
     @commands.command(name="harm", aliases=['Harm'])
     async def harm(self, ctx, char_id:str, *nameAndLevel):
@@ -178,7 +185,7 @@ class CoreCommands(commands.Cog):
             charsheet = core.create_charsheet(msg)
 
             if core.edit_harm_rerolls(charsheet.harm, nameAndLevel):
-                await msg.edit(content=charsheet.print())
+                await msg.edit(content=charsheet.print(), components=self.stressButtons)
 
     @commands.command(name="rerolls", aliases=['reroll, Rerolls, rerolls'])
     async def rerolls(self, ctx, char_id:str, *nameAndLevel):
@@ -188,7 +195,7 @@ class CoreCommands(commands.Cog):
             charsheet = core.create_charsheet(msg)
 
             if core.edit_harm_rerolls(charsheet.rerolls, nameAndLevel):
-                await msg.edit(content=charsheet.print())
+                await msg.edit(content=charsheet.print(), components=self.stressButtons)
 
     # print the text of a given rule as a message
     @commands.command()
