@@ -27,7 +27,9 @@ async def on_ready():
 
 @oathbot.event
 async def on_button_click(interaction:Interaction):
+    _user = interaction.author
     if interaction.component.id == '-1stress':
+        print(f'{_user} reduced stress!')
         _data = interaction.message.content.split('\n')
         charsheet = CharSheet()
         charsheet.parse(_data)
@@ -36,6 +38,7 @@ async def on_button_click(interaction:Interaction):
         await interaction.respond(type=InteractionType.UpdateMessage, content=charsheet.print(), components=[[Button(style=ButtonStyle.green, label='-1 Stress', id='-1stress'), Button(style=ButtonStyle.red, label='+1 Stress', id='+1stress')]])
 
     if interaction.component.id == '+1stress':
+        print(f'{_user} increased stress!')
         _data = interaction.message.content.split('\n')
         charsheet = CharSheet()
         charsheet.parse(_data)

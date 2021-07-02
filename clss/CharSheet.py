@@ -72,29 +72,29 @@ class CharSheet:
 
 
     def print(self) -> str:
-        #name and character id
+        # name and character id
         output = ''
-        output += f'__{self.char_name}__\n'
+        output += f'{self.char_name}\n'
         output += f'ID: {self.char_id}\n'
 
         dash = '\u2014'
         dot = '\u2022'
         space = ' '
 
-        #resistance pips
+        # resistance pips
         output += f'I {dash+space if self.i_pips == 0 else (dot+space)*self.i_pips}'
         output += f'P {dash+space if self.p_pips == 0 else (dot+space)*self.p_pips}'
         output += f'R {dash+space if self.r_pips == 0 else (dot+space)*self.r_pips}\n'
 
-        #skills
+        # skills
         for k, v in self.skills.items():
             if v > 0:
                 output += f'{k} {(dot+space)*v}\n'
 
-        #stress
+        # stress
         output += f'Stress {(dot+space)*self.stress}\n'
 
-        #trauma
+        # trauma
         output += 'Trauma '
         if len(self.trauma) == 0:
             output += f'[ {dash} ]'
@@ -103,7 +103,7 @@ class CharSheet:
                 output += f'[ {i} ]'
         output += '\n'
 
-        #harm
+        # harm
         output += 'Harm '
         if len(self.harm) == 0:
             output += f'[ {dash} ]'
@@ -113,8 +113,8 @@ class CharSheet:
                 output += f'[ {k} {(dot+space)*v}] '
         output += '\n'
 
-        #rerolls
-        output +='Rerolls '
+        # rerolls
+        output += 'Rerolls '
         if len(self.rerolls) == 0:
             output += f'[ {dash} ]'
         else:
