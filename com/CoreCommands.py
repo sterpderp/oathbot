@@ -63,7 +63,7 @@ class CoreCommands(commands.Cog):
             if _id in msg.content:
                 _data = msg.content.split('\n')
                 _charsheet = CharSheet()
-                _charsheet.parse(ctx, _data)
+                _charsheet.parse(_data)
 
                 await channel.send(_charsheet.print(), components=self.stressButtons)
                 await msg.delete()
@@ -79,7 +79,7 @@ class CoreCommands(commands.Cog):
             if _id in msg.content:
                 _data = msg.content.split('\n')
                 _charsheet = CharSheet()
-                _charsheet.parse(ctx, _data)
+                _charsheet.parse(_data)
 
                 print(f'Raw data: {_data}')
 

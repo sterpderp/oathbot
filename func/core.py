@@ -118,7 +118,7 @@ def create_charsheet(msg):
 # return player ID number from <@!number> format
 def strip_id(raw_id):
     print(raw_id)
-    _player = raw_id.split('<@!')
-    _player = _player[1].split('>')
-    _player = _player[0]
+    _player = filter(str.isdigit, raw_id)
+    _player = "".join(_player)
+    print(_player)
     return _player
