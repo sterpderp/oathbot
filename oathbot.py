@@ -27,7 +27,7 @@ async def on_ready():
 
 @oathbot.event
 async def on_button_click(interaction:Interaction):
-    _user = interaction.author
+    _user = interaction.author.id
     if interaction.component.id == '-1stress':
         print(f'{_user} reduced stress!')
         _data = interaction.message.content.split('\n')

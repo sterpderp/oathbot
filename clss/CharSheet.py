@@ -1,10 +1,12 @@
 from func import core
-
+import discord
 
 class CharSheet:
     def __init__(self):
         self.char_name = ''
         self.char_id = ''
+        self.player_name = ''
+        self.player_id = ''
 
         self.i_pips = 0
         self.p_pips = 0
@@ -35,7 +37,19 @@ class CharSheet:
 
     def parse(self, data):
         self.char_name = data[0]
-        self.char_id = data[1].replace('ID: ', '')
+
+        self.char_id = data[1].split('Player: ')[0]
+        self.char_id = self.char_id.replace('ID: ', '')
+        self.char_id = self.char_id.strip()
+
+        # self.player_id = data[1].split('Player: ')[1]
+        # self.player_id = self.player_id.strip()
+        # self.player_id = core.strip_id(self.player_id)
+
+        # self.player_name =
+        # print(f'Player ID: {self.player_id}')
+        # print(f'Player Name: {self.player_name}')
+        # print(f'Character ID: {self.char_id}')
 
         _ipr = core.ipr_split(data[2])
         self.i_pips = _ipr[0]
@@ -75,7 +89,7 @@ class CharSheet:
         # name and character id
         output = ''
         output += f'{self.char_name}\n'
-        output += f'ID: {self.char_id}\n'
+        output += f'ID: {self.char_id}  Player: {self.player_name}\n'
 
         dash = '\u2014'
         dot = '\u2022'

@@ -9,13 +9,13 @@ prowess = ['Finesse', 'Prowl', 'Skirmish', 'Wreck']
 resolve = ['Aether', 'Command', 'Consort', 'Sway']
 skills = insight+prowess+resolve
 
-# get specific character sheet
+# get specific character sheet (placeholder)
 def get_sheet(ctx, char_id):
 
     pass
 
 
-# parse character sheet
+# parse character sheet (placeholder)
 def parse_sheet():
     pass
 
@@ -113,3 +113,12 @@ def create_charsheet(msg):
     _charsheet = CharSheet()
     _charsheet.parse(_data)
     return _charsheet
+
+
+# return player ID number from <@!number> format
+def strip_id(raw_id):
+    print(raw_id)
+    _player = raw_id.split('<@!')
+    _player = _player[1].split('>')
+    _player = _player[0]
+    return _player
