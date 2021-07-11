@@ -1,7 +1,8 @@
 import discord
+import time
 from discord.ext import commands
 
-from func import core
+from func import core, image
 from clss.CharSheet import CharSheet
 
 from discord_components import *
@@ -13,9 +14,14 @@ class CoreCommands(commands.Cog):
         self.stressButtons = [[Button(style=ButtonStyle.green, label='-1 Stress', id='-1stress'), Button(style=ButtonStyle.red, label='+1 Stress', id='+1stress')]]
 
     @commands.command()
-    async def button(self, ctx):
-        await ctx.send("Test message", 
-        components=[Button(style=ButtonStyle.red, label="Test")])
+    async def testimage(self, ctx):
+        start = time.time()
+        channel = discord.utils.get(ctx.guild.channels, name='oath-sheets')
+        path = image.test()
+        afterImage = time.time()
+        await channel.send(file=discord.File(path))
+        end = time.time()
+        await channel.send(f'Image generated in {afterImage - start} seconds and took {end - afterImage} seconds to post to discord.')
 
     @commands.command()
     async def findsheet(self, ctx, char_id):

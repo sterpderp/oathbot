@@ -102,7 +102,10 @@ class CharSheet:
                 output += f'{k} {(dot+space)*v}\n'
 
         # stress
-        output += f'Stress {(dot+space)*self.stress}\n'
+        if stress == 0:
+            output += f'Stress [ {dash} ]\n'
+        else:
+            output += f'Stress [ {(dot+space)*self.stress}]\n'
 
         # trauma
         output += 'Trauma '
