@@ -102,7 +102,7 @@ class CharSheet:
                 output += f'{k} {(dot+space)*v}\n'
 
         # stress
-        if stress == 0:
+        if self.stress == 0:
             output += f'Stress [ {dash} ]\n'
         else:
             output += f'Stress [ {(dot+space)*self.stress}]\n'

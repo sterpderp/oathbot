@@ -1,5 +1,6 @@
 import discord
 import time
+import os
 from discord.ext import commands
 
 from func import core, image
@@ -22,6 +23,32 @@ class CoreCommands(commands.Cog):
         await channel.send(file=discord.File(path))
         end = time.time()
         await channel.send(f'Image generated in {afterImage - start} seconds and took {end - afterImage} seconds to post to discord.')
+
+    @commands.command()
+    async def render(self, ctx, char_id):
+        channel = discord.utils.get(ctx.guild.channels, name='oath-sheets')
+
+        _id = f'ID: {char_id}'
+        _found = False
+        _charsheet = CharSheet()
+        assetsPath = os.path.abspath("assets")
+
+        msg = await core.find_message(channel, char_id)
+        if msg and (msg.author.id == self.bot.user.id):
+            _charsheet = core.create_charsheet(msg)
+
+        attachFP = ""
+
+        if any(msg.attachments):
+            for attachment in msg.attachments:
+                if attachment.filename.lower().endswith(".png"):
+                    attachFP = assetsPath + f"\\{char_id}_portrait.png"
+                    await attachment.save(attachFP)
+
+        path = image.render(_charsheet, "ornate coords", attachFP)
+        await channel.send(file=discord.File(path))
+
+        
 
     @commands.command()
     async def findsheet(self, ctx, char_id):
@@ -63,15 +90,22 @@ class CoreCommands(commands.Cog):
         channel = discord.utils.get(ctx.guild.channels, name='oath-sheets')
         _id = f'ID: {char_id}'
         _found = False
+        assetsPath = os.path.abspath("assets")
 
         async for msg in channel.history(limit=1000):
 
-            if _id in msg.content:
+            if (msg.author.id != self.bot.user.id) and _id in msg.content:
                 _data = msg.content.split('\n')
                 _charsheet = CharSheet()
                 _charsheet.parse(_data)
 
-                await channel.send(_charsheet.print(), components=self.stressButtons)
+                if any(msg.attachments):
+                    for attachment in msg.attachments:
+                        if attachment.filename.lower().endswith(".png"):
+                            await attachment.save(assetsPath + f"\\{char_id}.png")
+
+                discFile = discord.File(assetsPath + f"\\{char_id}.png")
+                await channel.send(_charsheet.print(), components=self.stressButtons, file=discFile)
                 await msg.delete()
 
     @commands.command()

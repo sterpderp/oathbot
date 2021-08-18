@@ -43,6 +43,7 @@ def bracket_split(data):
     _data = [e.strip(' ') for e in _data]
     del _data[0]
     _data = [s.title() for s in _data]
+    _data = [s for s in _data if '\u2014' not in s]
     return _data
 
 
