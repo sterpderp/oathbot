@@ -9,10 +9,26 @@ from clss.CharSheet import CharSheet
 from discord_components import *
 
 class CoreCommands(commands.Cog):
+    quickMenu = [[Button(style=ButtonStyle.green, label='-1 Stress', id='-1stress'), Button(style=ButtonStyle.blue, label="Edit", id="edit"), Button(style=ButtonStyle.red, label='+1 Stress', id='+1stress')]]
+    editMenu = [[
+        Select(placeholder="Select field to edit.", options = [
+            SelectOption(label = "Finish Editing", value="finish"),
+            SelectOption(label = "Stress", value="stress"),
+            SelectOption(label = "Rerolls", value="rerolls"),
+            SelectOption(label = "Skills", value="skills"),
+            SelectOption(label = "Recover (Reduce all Harm by 1)", value="recover")
+        ])
+    ]]
+    editButtons = [
+        [
+            Button(style=ButtonStyle.red, label='-1', id='-1'),
+            Button(style=ButtonStyle.blue, label='Finish', id='finish'),
+            Button(style=ButtonStyle.green, label='+1', id='+1')
+        ]
+    ]
 
     def __init__(self, bot):
         self.bot = bot
-        self.stressButtons = [[Button(style=ButtonStyle.green, label='-1 Stress', id='-1stress'), Button(style=ButtonStyle.red, label='+1 Stress', id='+1stress')]]
 
     @commands.command()
     async def testimage(self, ctx):
@@ -105,7 +121,7 @@ class CoreCommands(commands.Cog):
                             await attachment.save(assetsPath + f"\\{char_id}.png")
 
                 discFile = discord.File(assetsPath + f"\\{char_id}.png")
-                await channel.send(_charsheet.print(), components=self.stressButtons, file=discFile)
+                await channel.send(_charsheet.print(), components=CoreCommands.quickMenu, file=discFile)
                 await msg.delete()
 
     @commands.command()
@@ -141,7 +157,7 @@ class CoreCommands(commands.Cog):
                 elif resistance_name == 'Resolve':
                     charsheet.r_pips = amount
                 
-            await msg.edit(content=charsheet.print(), components=self.stressButtons)
+            await msg.edit(content=charsheet.print())
 
     #passthrough utility commands for modifying insight, prowess, or resolve
     @commands.command(name='insight', aliases=['Insight', 'I', 'i'])
@@ -187,7 +203,7 @@ class CoreCommands(commands.Cog):
                     if skillname in core.resolve:
                         charsheet.r_pips += resistancemod
                 
-                await msg.edit(content=charsheet.print(), components=self.stressButtons)
+                await msg.edit(content=charsheet.print())
 
     @commands.command(name="stress", aliases=['Stress'])
     async def stress(self, ctx, char_id:str, amount:int):
@@ -197,7 +213,7 @@ class CoreCommands(commands.Cog):
             charsheet = core.create_charsheet(msg)
             if amount >= 0:
                 charsheet.stress = amount
-            await msg.edit(content=charsheet.print(), components=self.stressButtons)
+            await msg.edit(content=charsheet.print())
 
     @commands.command(name="trauma", aliases=['Trauma'])
     async def trauma(self, ctx, char_id:str, *traumaName:str):
@@ -216,7 +232,7 @@ class CoreCommands(commands.Cog):
                 charsheet.trauma.remove(name)
             else:
                 charsheet.trauma.append(name)
-            await msg.edit(content=charsheet.print(), components=self.stressButtons)
+            await msg.edit(content=charsheet.print())
 
     @commands.command(name="harm", aliases=['Harm'])
     async def harm(self, ctx, char_id:str, *nameAndLevel):
@@ -226,7 +242,7 @@ class CoreCommands(commands.Cog):
             charsheet = core.create_charsheet(msg)
 
             if core.edit_harm_rerolls(charsheet.harm, nameAndLevel):
-                await msg.edit(content=charsheet.print(), components=self.stressButtons)
+                await msg.edit(content=charsheet.print())
 
     @commands.command(name="rerolls", aliases=['reroll, Rerolls, rerolls'])
     async def rerolls(self, ctx, char_id:str, *nameAndLevel):
@@ -236,7 +252,7 @@ class CoreCommands(commands.Cog):
             charsheet = core.create_charsheet(msg)
 
             if core.edit_harm_rerolls(charsheet.rerolls, nameAndLevel):
-                await msg.edit(content=charsheet.print(), components=self.stressButtons)
+                await msg.edit(content=charsheet.print())
 
     # print the text of a given rule as a message
     @commands.command()

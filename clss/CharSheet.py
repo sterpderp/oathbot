@@ -36,7 +36,7 @@ class CharSheet:
         self.rerolls = {}
 
     def parse(self, data):
-        self.char_name = data[0]
+        self.char_name = data[0].replace('_', '')
 
         self.char_id = data[1].split('Player: ')[0]
         self.char_id = self.char_id.replace('ID: ', '')
@@ -75,11 +75,6 @@ class CharSheet:
             if 'Rerolls [' in i:
                 e = core.bracket_split(i)
                 self.rerolls = core.harm_count(e)
-
-
-
-
-
 
     def print(self) -> str:
         # name and character id

@@ -131,8 +131,6 @@ def render(charSheet:CharSheet, coordsName:str, attachFP:str):
                 if counter < rerollValue:
                     composite.paste(dice, strToTuple(coord), mask=diceMask)
                     counter+=1
-        
-    
     
 
     imagePath = assetsPath + "\\composite.png"
