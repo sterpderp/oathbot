@@ -6,26 +6,9 @@ from discord.ext import commands
 from func import core, image
 from clss.CharSheet import CharSheet
 
-from discord_components import *
+from discord_components import DiscordComponents, Button, ButtonStyle, Select, SelectOption, Interaction
 
 class CoreCommands(commands.Cog):
-    quickMenu = [[Button(style=ButtonStyle.green, label='-1 Stress', id='-1stress'), Button(style=ButtonStyle.blue, label="Edit", id="edit"), Button(style=ButtonStyle.red, label='+1 Stress', id='+1stress')]]
-    editMenu = [[
-        Select(placeholder="Select field to edit.", options = [
-            SelectOption(label = "Finish Editing", value="finish"),
-            SelectOption(label = "Stress", value="stress"),
-            SelectOption(label = "Rerolls", value="rerolls"),
-            SelectOption(label = "Skills", value="skills"),
-            SelectOption(label = "Recover (Reduce all Harm by 1)", value="recover")
-        ])
-    ]]
-    editButtons = [
-        [
-            Button(style=ButtonStyle.red, label='-1', id='-1'),
-            Button(style=ButtonStyle.blue, label='Finish', id='finish'),
-            Button(style=ButtonStyle.green, label='+1', id='+1')
-        ]
-    ]
 
     def __init__(self, bot):
         self.bot = bot
@@ -121,7 +104,7 @@ class CoreCommands(commands.Cog):
                             await attachment.save(assetsPath + f"\\{char_id}.png")
 
                 discFile = discord.File(assetsPath + f"\\{char_id}.png")
-                await channel.send(_charsheet.print(), components=CoreCommands.quickMenu, file=discFile)
+                await channel.send(_charsheet.print(), components=core.quickMenu, file=discFile)
                 await msg.delete()
 
     @commands.command()
